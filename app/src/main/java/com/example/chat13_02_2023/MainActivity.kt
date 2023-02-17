@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
                     FirebaseAuth.getInstance().signInWithCredential(credenciales).addOnCompleteListener {
                         if (it.isSuccessful) {
                             prefs.saveEmail(cuenta.email!!)
-                            val usuario = Usuarios(cuenta.displayName ?: "", cuenta.email,  "default/perfil.jpg")
+                            val usuario = Usuarios(cuenta.displayName ?: "", cuenta.email,  cuenta.displayName ?: "" + "perfil.jpg")
                             añadirUsuario(usuario)
                             irUsuarios()
                         }

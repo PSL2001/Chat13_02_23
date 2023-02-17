@@ -17,12 +17,12 @@ class UsuariosViewHolder(v: View): RecyclerView.ViewHolder(v) {
     fun render(usuario: Usuarios) {
         binding.tvEmail.text = usuario.email
         binding.tvCiudad.text = usuario.username
-        agregarFoto(usuario.email.toString())
+        agregarFoto(usuario.perfil)
     }
 
-    private fun agregarFoto(email: String) {
+    private fun agregarFoto(perfil: String) {
         val ref = storage.reference
-        val file = ref.child("$email/perfil.jpg")
+        val file = ref.child("$perfil")
         file.metadata.addOnSuccessListener {
             //La foto existe, la descargamos
             file.downloadUrl.addOnSuccessListener { uri ->
