@@ -32,11 +32,22 @@ class UsuariosActivity : AppCompatActivity() {
     private fun getUsuarios() {
         db.getReference("usuarios").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
-                TODO("Not yet implemented")
+                lista.clear()
+                if (snapshot.exists()) {
+                    for (usuario in snapshot.children) {
+                        val u = usuario.getValue(Usuarios::class.java)
+                        if (u != null && u.email != prefs.getEmail()) {
+                            lista.add(u)
+                        }
+                    }
+                    lista.sortBy { it.email }
+                    adapter.lista = lista
+                    adapter.notifyDataSetChanged()
+                }
             }
 
             override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
+
             }
 
         })

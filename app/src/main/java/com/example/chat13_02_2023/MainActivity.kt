@@ -5,12 +5,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import com.example.chat13_02_2023.databinding.ActivityMainBinding
+import com.example.chat13_02_2023.models.Usuarios
 import com.example.chat13_02_2023.prefs.Prefs
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.FirebaseDatabase
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,6 +26,8 @@ class MainActivity : AppCompatActivity() {
                     FirebaseAuth.getInstance().signInWithCredential(credenciales).addOnCompleteListener {
                         if (it.isSuccessful) {
                             prefs.saveEmail(cuenta.email!!)
+                            val usuario = Usuarios(cuenta.displayName ?: "", cuenta.email,  "default/perfil.jpg")
+                            añadirUsuario(usuario)
                             irUsuarios()
                         }
                     }.addOnFailureListener {
@@ -36,6 +40,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun añadirUsuario(usuario: Usuarios) {
+        db.getReference("usuarios").child(usuario.username.toString()).setValue(usuario).addOnSuccessListener {
+            println("Usuario añadido")
+        }.addOnFailureListener {
+            it.printStackTrace()
+        }
+    }
+
     private fun irUsuarios() {
         startActivity(Intent(this, UsuariosActivity::class.java))
     }
@@ -43,11 +55,13 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var prefs: Prefs
     lateinit var binding: ActivityMainBinding
+    lateinit var db : FirebaseDatabase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         prefs = Prefs(this)
         setContentView(binding.root)
+        db = FirebaseDatabase.getInstance("https://proyecto-chat-13-02-23-default-rtdb.europe-west1.firebasedatabase.app/")
         comprobarSesion()
         setListeners()
     }

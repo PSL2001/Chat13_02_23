@@ -16,7 +16,7 @@ class UsuariosViewHolder(v: View): RecyclerView.ViewHolder(v) {
 
     fun render(usuario: Usuarios) {
         binding.tvEmail.text = usuario.email
-        binding.tvCiudad.text = usuario.ciudad
+        binding.tvCiudad.text = usuario.username
         agregarFoto(usuario.email.toString())
     }
 
@@ -28,7 +28,8 @@ class UsuariosViewHolder(v: View): RecyclerView.ViewHolder(v) {
             file.downloadUrl.addOnSuccessListener { uri ->
                 rellenaImagen(uri)
             }
-        } .addOnFailureListener {
+        }
+            .addOnFailureListener {
             //La foto no existe, ponemos una por defecto
             val default = ref.child("default/perfil.jpg")
             default.downloadUrl.addOnSuccessListener { uri ->
